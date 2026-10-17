@@ -63,7 +63,7 @@ def lerp(a, b, t):
 SCENES = [
     dict(img="0240", t0=0.0, t1=4.6, kb=((0.50, 0.50, 0.84), (0.51, 0.60, 0.64)), trans_in="fadeblack",
          text=dict(pos="top", y=400, items=[
-             ("chars", "L'ARTISAN KANOYA", "corm", 48, GOLD, 12, 0.7),
+             ("chars", "L'Artisan KANOYA", "corm", 60, GOLD, 4, 0.7),
              ("line", 150, 1.3),
              ("chars", "ある日のディナーより", "mincho", 64, WHITE, 14, 1.5),
          ])),
