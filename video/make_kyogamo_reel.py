@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""L'Artisan KANOYA — 「ある日のディナーより」京鴨ロース Instagram リール (1080x1920 / 30秒)
+"""L'Artisan KANOYA（奈良春日 鹿のや）— 「ある日のディナーより」京鴨ロース・ゲランド塩・黒ニンニク・赤米 Instagram リール (1080x1920 / 30秒)
 
 使い方:
   python3 video/make_kyogamo_reel.py --fonts <フォントのディレクトリ> [--out video/kyogamo_reel.mp4]
@@ -70,29 +70,33 @@ SCENES = [
     dict(img="0253", t0=3.8, t1=8.4, editorial=True, trans_in="blur",
          text=dict(pos="editorial", y=1150, items=[
              ("chars", "Un dîner, un jour", "cormi", 58, GOLD, 2, 1.0),
-             ("chars", "素材の声を、ひと皿に。", "mincho", 48, WHITE, 10, 1.4),
+             ("chars", "その日限りのフレンチを", "mincho", 50, WHITE, 10, 1.4),
          ])),
     dict(img="0257", t0=7.6, t1=12.2, kb=((0.50, 0.50, 0.72), (0.49, 0.56, 0.54)), trans_in="leak",
          text=dict(pos="top", y=300, ingredient=("Canard de Kyoto", "京鴨ロース", "皮目は香ばしく、身はしっとりと"))),
     dict(img="0259", t0=11.4, t1=16.0, kb=((0.47, 0.60, 0.62), (0.34, 0.70, 0.44)), trans_in="wipe",
-         text=dict(pos="top", y=300, ingredient=("Sel de Guérande", "ゲランドの塩", "ブルターニュの海が育む、まろやかな塩"))),
+         text=dict(pos="top", y=300, ingredient=("Sel de Guérande", "ゲランド塩", "フランス・ブルターニュの海塩"))),
     dict(img="0261", t0=15.2, t1=19.8, kb=((0.48, 0.66, 0.58), (0.42, 0.76, 0.44)), trans_in="push",
-         text=dict(pos="bottom", y=1170, ingredient=("Ail noir", "黒にんにく", "熟成が生む、深い甘みとコク"))),
+         text=dict(pos="bottom", y=1170, ingredient=("Ail noir", "黒ニンニク", "熟成が生む、深い甘みとコク"))),
     dict(img="0244", t0=19.0, t1=23.6, kb=((0.52, 0.55, 0.375), (0.62, 0.64, 0.30)), trans_in="zoom",
          text=dict(pos="top", y=300, ingredient=("Riz rouge", "赤米", "噛むほどに広がる、香ばしい余韻"))),
-    dict(img="0249", t0=22.8, t1=27.6, kb=((0.50, 0.52, 0.84), (0.50, 0.58, 0.72)), trans_in="leak",
+    dict(img="0249", t0=22.8, t1=26.8, kb=((0.50, 0.52, 0.84), (0.50, 0.58, 0.72)), trans_in="leak",
          text=dict(pos="top", y=270, items=[
-             ("chars", "ある日のディナーより", "mincho", 40, GOLD, 12, 0.9),
-             ("chars", "京鴨ロース", "mincho_m", 86, WHITE, 18, 1.2),
-             ("line", 150, 1.8),
-             ("chars", "ゲランドの塩、黒にんにく、赤米", "mincho", 42, WHITE, 6, 2.0),
+             ("chars", "ある日のディナーより", "mincho", 40, GOLD, 12, 0.6),
+             ("chars", "京鴨ロース", "mincho_m", 86, WHITE, 18, 0.85),
+             ("line", 150, 1.3),
+             ("chars", "ゲランド塩・黒ニンニク・赤米", "mincho", 42, WHITE, 6, 1.4),
          ])),
-    dict(img="0263", t0=26.8, t1=30.0, endcard=True, trans_in="fade",
-         text=dict(pos="center", y=760, items=[
-             ("chars", "L'Artisan", "cormi", 124, WHITE, 2, 0.5),
-             ("chars", "KANOYA", "corm", 62, GOLD, 34, 0.9),
-             ("line", 150, 1.2),
-             ("chars", "またのお越しを、お待ちしております", "mincho", 34, WHITE, 6, 1.4),
+    dict(img="0263", t0=26.0, t1=30.0, endcard=True, trans_in="fade",
+         text=dict(pos="center", y=560, items=[
+             ("chars", "千年の森の静寂に、", "mincho", 42, WHITE, 8, 0.4),
+             ("chars", "一皿の物語を添えて。", "mincho", 42, WHITE, 8, 0.8),
+             ("gap", 90),
+             ("chars", "L'Artisan", "cormi", 124, WHITE, 2, 1.3),
+             ("chars", "KANOYA", "corm", 62, GOLD, 34, 1.55),
+             ("line", 150, 1.8),
+             ("chars", "奈良春日 鹿のや", "mincho", 36, WHITE, 8, 1.9),
+             ("chars", "ご予約 0742-22-6666", "mincho", 32, GOLD, 4, 2.05),
          ])),
 ]
 
@@ -173,6 +177,9 @@ def build_text(spec):
     y = spec["y"]
     layers = []
     for it in items:
+        if it[0] == "gap":
+            y += it[1]
+            continue
         if it[0] == "line":
             layers.append(dict(kind="line", y=y + 6, w=it[1], t=it[2]))
             y += 44
