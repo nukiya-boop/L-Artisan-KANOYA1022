@@ -2,7 +2,7 @@
 """L'Artisan KANOYA（奈良春日 鹿のや）— 「ある日のディナーより」京鴨ロース・ゲランド塩・黒ニンニク・赤米 Instagram リール (1080x1920 / 30秒)
 
 使い方:
-  python3 video/make_kyogamo_reel.py --fonts <フォントのディレクトリ> [--out video/kyogamo_reel.mp4]
+  python3 video/make_kyogamo_reel.py --fonts <フォントのディレクトリ> [--out video/kyogamo_reel.mp4] [--music video/Copper_and_Candlelight.mp3]
 
 必要なフォント (Google Fonts, OFL):
   ShipporiMincho-Regular.ttf / ShipporiMincho-Medium.ttf
@@ -414,6 +414,8 @@ def main():
     ap.add_argument("--out", default=os.path.join(ROOT, "video", "kyogamo_reel.mp4"))
     ap.add_argument("--stills", help="指定した秒数のフレームをPNGで書き出す (例: 2,6,10)")
     ap.add_argument("--workers", type=int, default=os.cpu_count())
+    ap.add_argument("--music", default=os.path.join(ROOT, "video", "Copper_and_Candlelight.mp3"),
+                    help="BGM (先頭30秒を使用、ラスト2.5秒でフェードアウト)。空文字で無音")
     args = ap.parse_args()
 
     if args.stills:
@@ -424,12 +426,17 @@ def main():
         return
 
     n = round(DURATION * FPS)
+    if args.music:
+        audio_in = ["-i", args.music]
+        audio_fx = ["-af", f"atrim=0:{DURATION},afade=t=in:d=0.3,afade=t=out:st={DURATION - 2.5}:d=2.5", "-ar", "48000"]
+    else:
+        audio_in = ["-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=48000"]
+        audio_fx = []
     cmd = ["ffmpeg", "-y", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
-           "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=48000",
-           "-map", "0:v", "-map", "1:a", "-shortest",
+           *audio_in, "-map", "0:v", "-map", "1:a", *audio_fx, "-t", str(DURATION),
            "-c:v", "libx264", "-preset", "slow", "-crf", "19", "-maxrate", "14M", "-bufsize", "28M", "-pix_fmt", "yuv420p",
-           "-profile:v", "high", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", args.out]
+           "-profile:v", "high", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", args.out]
     ff = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     with Pool(args.workers, initializer=init_resources, initargs=(args.fonts,)) as pool:
         for i, buf in enumerate(pool.imap(render, range(n), chunksize=4)):
